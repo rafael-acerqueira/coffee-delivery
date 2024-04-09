@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
-export const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
 
   :root {
     --base-title: #272221;
@@ -11,15 +11,15 @@ export const GlobalStyle = createGlobalStyle`
     --base-button: "#E6E5E5";
     --base-input: "#EDEDED";
     --base-card: "#F3F2F2";
-    --background: "FAFAFA"
-    --white: "#FFFFFF"
+    --background: "FAFAFA";
+    --white: "#FFFFFF";
 
     --yellow-dark: "#C47F17";
     --yellow: "#DBAC2C";
-    --yellow: "#F1E9C9";
+    --yellow-light: "#F1E9C9";
     --purple-dark: "#4B2995";
     --purple: "#8047F8";
-    --purple-light: "#EBE5F9"
+    --purple-light: "#EBE5F9";
   }
 
   * {
@@ -29,6 +29,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    background-color: #FAFAFA;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -43,3 +44,5 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 1rem;
   }
 `
+
+export default GlobalStyle;
