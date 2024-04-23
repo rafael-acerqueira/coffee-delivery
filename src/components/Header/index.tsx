@@ -12,7 +12,9 @@ export function Header() {
       <Link to='/'><img src={logo} alt="" /></Link>
       <HeaderOptions>
         <CityCard />
-        <Cart variant={CartVariants.header} />
+        <Link to='/cart'>
+          <Cart variant={CartVariants.header} />
+        </Link>
       </HeaderOptions>
 
     </HeaderContainer>
