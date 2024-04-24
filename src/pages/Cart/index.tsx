@@ -196,7 +196,7 @@ export function Cart() {
               <CartSummaryHighlight>R$33,20</CartSummaryHighlight>
             </CartSummaryPrice>
           </CartFooter>
-          <BuyButton>Confirmar Pedido</BuyButton>
+          <BuyButton to="/delivery">Confirmar Pedido</BuyButton>
         </CartSelectedItems>
       </div>
     </Container>

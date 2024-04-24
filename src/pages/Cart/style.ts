@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from 'styled-components'
 
 export const Container = styled.div`
@@ -235,9 +236,10 @@ export const CartSummaryCommonValue = styled.span`
   color: var(--base-text);
 `
 
-export const BuyButton = styled.button`
+export const BuyButton = styled(Link)`
   background-color: var(--yellow);
   text-transform: uppercase;
+  display: block;
   border: 0;
   border-radius: 6px;
   color: var(--white);
@@ -246,6 +248,9 @@ export const BuyButton = styled.button`
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  line-height: 3.4;
 
   transition: .5s background-color;
 
