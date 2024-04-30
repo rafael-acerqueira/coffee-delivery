@@ -1,7 +1,6 @@
-import { Link } from "react-router-dom";
 import styled from 'styled-components'
 
-export const Container = styled.div`
+export const Container = styled.form`
   margin: 0 auto;
   width: 70rem;
   display: grid;
@@ -236,7 +235,7 @@ export const CartSummaryCommonValue = styled.span`
   color: var(--base-text);
 `
 
-export const BuyButton = styled(Link)`
+export const BuyButton = styled.button`
   background-color: var(--yellow);
   text-transform: uppercase;
   display: block;

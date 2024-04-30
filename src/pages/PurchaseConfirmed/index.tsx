@@ -1,4 +1,6 @@
 import { MapPin, Timer, CurrencyDollar } from '@phosphor-icons/react'
+import { useContext } from 'react'
+import { CartContext } from '../../contexts/CartContext'
 
 import {
   DeveliryWrapper,
@@ -13,7 +15,11 @@ import {
 import delivery from '../../assets/images/delivery.png'
 
 
+
 export function PurchaseConfirmed() {
+
+  const { deliveryAddress } = useContext(CartContext)
+
   return (
     <DeveliryWrapper>
       <div>
@@ -27,8 +33,8 @@ export function PurchaseConfirmed() {
               <MapPin weight='fill' color="#fff" size="16" />
             </DeliveryIconContainer>
             <DeliveryInfo>
-              <span>Entrega em <strong>Rua João Daniel Martinelli, 102</strong></span>
-              <span>Farrapos - Porto Alegre, RS</span>
+              <span>Entrega em <strong>{deliveryAddress.street}, {deliveryAddress.number}</strong></span>
+              <span>{deliveryAddress.neighboorhood} - {deliveryAddress.city}, {deliveryAddress.uf}</span>
             </DeliveryInfo>
           </DeliveryInfoBoxItem>
 
@@ -48,7 +54,7 @@ export function PurchaseConfirmed() {
             </DeliveryIconContainer>
             <DeliveryInfo>
               <span>Pagamento na entrega</span>
-              <strong>Cartão de Crédito</strong>
+              <strong>{deliveryAddress.payment_type}</strong>
             </DeliveryInfo>
           </DeliveryInfoBoxItem>
         </DeliveryInfoBox>

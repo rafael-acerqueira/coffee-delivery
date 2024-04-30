@@ -1,28 +1,8 @@
-import { useState } from 'react'
-
 import { Minus, Plus } from '@phosphor-icons/react'
 import { Container, CoffeeQuantity } from './style'
 
 
-export function CoffeeCount() {
-
-  const [quantity, setQuantity] = useState(0)
-
-  function increaseCoffee() {
-    setQuantity(quantity => quantity + 1)
-  }
-
-  function decreaseCoffee() {
-    setQuantity(quantity => {
-
-      if (quantity > 0) {
-        return quantity - 1
-      }
-
-      return 0
-    })
-  }
-
+export function CoffeeCount({ quantity, decreaseCoffee, increaseCoffee }) {
   return (
     <Container>
       <Minus

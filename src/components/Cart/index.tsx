@@ -1,5 +1,5 @@
 import { ShoppingCartSimple } from "@phosphor-icons/react"
-import { CartContainer } from "./styles";
+import { CartContainer, CartNotification } from "./styles";
 
 export const CartVariants = {
   header: {
@@ -16,12 +16,17 @@ interface CartProps {
   variant: {
     background: string,
     color: string
-  }
+  },
+  items: number,
+  addToCart: () => void
 }
 
-export function Cart({ variant }: CartProps) {
+export function Cart({ variant, items, addToCart }: CartProps) {
   return (
-    <CartContainer background={variant.background} >
+    <CartContainer background={variant.background} onClick={addToCart}>
+      {
+        items > 0 && <CartNotification>{items}</CartNotification>
+      }
       <ShoppingCartSimple size={22} color={variant.color} weight="fill" />
     </CartContainer>
   )

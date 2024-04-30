@@ -1,4 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext } from "react"
+
+import { useForm } from 'react-hook-form'
+
+import { useNavigate } from 'react-router-dom';
 
 import { MapPin, CurrencyDollar, CreditCard, Bank, Money, Trash } from "@phosphor-icons/react"
 
@@ -34,41 +38,45 @@ import {
   BuyButton
 } from './style'
 
-import { images } from "../Home/images"
 import { CoffeeCount } from "../../components/CoffeeCount"
+import { CartContext } from "../../contexts/CartContext"
 
 export function Cart() {
+  const {
+    coffees,
+    increaseQuantity,
+    decreaseQuantity,
+    removeCoffee,
+    updateDeliveryAddress,
+    clearCart
+  } = useContext(CartContext)
 
-  const [cep, setCep] = useState('')
-  const [street, setStreet] = useState('')
-  const [neighborhood, setNeighborhood] = useState('')
-  const [city, setCity] = useState('')
-  const [uf, setUf] = useState('')
-
-
-  useEffect(() => {
-    let delay = 0
-    if (cep) {
-      delay = setTimeout(() => {
-        fetch(`https://viacep.com.br/ws/${cep}/json/`)
-          .then(reponse => reponse.json())
-          .then(data => {
-            setStreet(data["logradouro"])
-            setNeighborhood(data["bairro"])
-            setCity(data["localidade"])
-            setUf(data["uf"])
-          })
-      }, 1000)
-    }
+  const {
+    register,
+    handleSubmit
+  } = useForm()
 
 
-    return () => clearTimeout(delay)
+  const navigate = useNavigate()
 
-  }, [cep])
+  function handleCheckout(data) {
+    updateDeliveryAddress(data)
+    navigate('/delivery')
+    clearCart()
+  }
+
+
+  const totalItemsPrice = coffees.reduce((previous, current) => {
+    return previous += current.price * current.quantity
+  }, 0)
+
+  const deliveryFee = 3.5
+
+  const totalPrice = totalItemsPrice + deliveryFee
 
 
   return (
-    <Container>
+    <Container onSubmit={handleSubmit(handleCheckout)}>
       <div>
         <CartUserInfoTitle>Complete seu pedido</CartUserInfoTitle>
         <CartAddressBox>
@@ -79,45 +87,46 @@ export function Cart() {
               <CartAddressBoxHeaderSubtitle>Informe o endereço onde deseja receber seu pedido</CartAddressBoxHeaderSubtitle>
             </CartAddressBoxHeaderInfo>
           </CartAddressBoxHeader>
-          <form>
+          <div>
             <CartElementsRow>
               <CartAddressFormInput
-                value={cep}
-                onChange={e => setCep(e.target.value)}
                 size='sm'
                 placeholder="CEP"
+                {...register('cep')}
               />
             </CartElementsRow>
             <CartElementsRow>
               <CartAddressFormInput
                 size="xl"
                 placeholder="Rua"
-                onChange={e => setStreet(e.target.value)}
-                value={street}
+                {...register('street')}
               />
+
             </CartElementsRow>
             <CartElementsRow>
-              <CartAddressFormInput size="sm" placeholder="Número" />
-              <CartAddressFormInput size="lg" placeholder="Complemento" />
+              <CartAddressFormInput size="sm" placeholder="Número" {...register('number')} />
+              <CartAddressFormInput size="lg" placeholder="Complemento" {...register('complement')} />
             </CartElementsRow>
             <CartElementsRow>
               <CartAddressFormInput
                 size="sm"
                 placeholder="Bairro"
-                onChange={e => setNeighborhood(e.target.value)}
-                value={neighborhood} />
+                {...register('neighborhood')}
+              />
+
               <CartAddressFormInput
                 size="md"
                 placeholder="Cidade"
-                onChange={e => setCity(e.target.value)}
-                value={city} />
+                {...register('city')}
+              />
+
               <CartAddressFormInput
                 size="xs"
                 placeholder="UF"
-                onChange={e => setUf(e.target.value)}
-                value={uf} />
+                {...register('uf')}
+              />
             </CartElementsRow>
-          </form>
+          </div>
         </CartAddressBox>
         <CartPaymentBox>
           <CartAddressBoxHeader>
@@ -128,17 +137,17 @@ export function Cart() {
             </CartAddressBoxHeaderInfo>
           </CartAddressBoxHeader>
           <PaymentTypesBox>
-            <PaymentTypeRadio type="radio" name="payment-type-box" id="credit-card" value="credit-card" />
+            <PaymentTypeRadio type="radio" {...register('payment_type')} id="credit-card" value="credit-card" />
             <PaymentTypeItem htmlFor="credit-card">
               <CreditCard color="#8047F8" size="16" />
               <PaymentTypeTitle>Cartão de crédito</PaymentTypeTitle>
             </PaymentTypeItem>
-            <PaymentTypeRadio type="radio" name="payment-type-box" id="debit-card" value="debit-card" />
+            <PaymentTypeRadio type="radio" {...register('payment_type')} id="debit-card" value="debit-card" />
             <PaymentTypeItem htmlFor="debit-card">
               <Bank color="#8047F8" size="16" />
               <PaymentTypeTitle>Cartão de débito</PaymentTypeTitle>
             </PaymentTypeItem>
-            <PaymentTypeRadio type="radio" name="payment-type-box" id="cash" value="cash" />
+            <PaymentTypeRadio type="radio" {...register('payment_type')} id="cash" value="cash" />
             <PaymentTypeItem htmlFor="cash">
               <Money color="#8047F8" size="16" />
               <PaymentTypeTitle>Dinheiro</PaymentTypeTitle>
@@ -149,54 +158,90 @@ export function Cart() {
       <div>
         <CartUserInfoTitle>Cafés selecionados</CartUserInfoTitle>
         <CartSelectedItems>
-          <CartItem>
-            <CartItemWrapper>
-              <CartItemImage src={images["image-1"]} alt="" />
-              <CartCoffeeOptionsBox>
-                <span>Expresso Tradicional</span>
-                <CartCoffeeOptions>
-                  <CoffeeCount />
-                  <RemoveButton>
-                    <Trash color="#8047F8" size="16" />
-                    <RemoveButtonText>Remover</RemoveButtonText>
-                  </RemoveButton>
-                </CartCoffeeOptions>
-              </CartCoffeeOptionsBox>
-            </CartItemWrapper>
-            <CartPrice>R$9,90</CartPrice>
-          </CartItem>
-          <CartItem>
-            <CartItemWrapper>
-              <CartItemImage src={images["image-2"]} alt="" />
-              <CartCoffeeOptionsBox>
-                <span>Latte</span>
-                <CartCoffeeOptions>
-                  <CoffeeCount />
-                  <RemoveButton>
-                    <Trash color="#8047F8" size="16" />
-                    <RemoveButtonText>Remover</RemoveButtonText>
-                  </RemoveButton>
-                </CartCoffeeOptions>
-              </CartCoffeeOptionsBox>
-            </CartItemWrapper>
-            <CartPrice>R$19,80</CartPrice>
-          </CartItem>
+          {
+            coffees.map(coffee => (
+              <CartItem key={coffee.id}>
+                <CartItemWrapper>
+                  <CartItemImage src={coffee.image} alt="" />
+                  <CartCoffeeOptionsBox>
+                    <span>{coffee.name}</span>
+                    <CartCoffeeOptions>
+                      <CoffeeCount
+                        quantity={coffee.quantity}
+                        increaseCoffee={() => increaseQuantity(coffee.id)}
+                        decreaseCoffee={() => decreaseQuantity(coffee.id)}
+                      />
+                      <RemoveButton onClick={() => removeCoffee(coffee.id)}>
+                        <Trash color="#8047F8" size="16" />
+                        <RemoveButtonText>Remover</RemoveButtonText>
+                      </RemoveButton>
+                    </CartCoffeeOptions>
+                  </CartCoffeeOptionsBox>
+                </CartItemWrapper>
+                <CartPrice>
+                  {
+                    (coffee.price * coffee.quantity).toLocaleString(
+                      "pt-BR",
+                      {
+                        style: "currency",
+                        currency: "BRL",
+                        minimumFractionDigits: 2
+                      }
+                    )
+                  }
+                </CartPrice>
+              </CartItem>
+            ))
+          }
 
           <CartFooter>
             <CartSummaryPrice>
               <CartSummaryCommon>Total de itens</CartSummaryCommon>
-              <CartSummaryCommonValue>R$29,70</CartSummaryCommonValue>
+              <CartSummaryCommonValue>
+                {
+                  totalItemsPrice.toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                      minimumFractionDigits: 2
+                    }
+                  )
+                }
+              </CartSummaryCommonValue>
             </CartSummaryPrice>
             <CartSummaryPrice>
               <CartSummaryCommon>Entrega</CartSummaryCommon>
-              <CartSummaryCommonValue>R$3,50</CartSummaryCommonValue>
+              <CartSummaryCommonValue>
+                {
+                  deliveryFee.toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                      minimumFractionDigits: 2
+                    }
+                  )
+                }
+              </CartSummaryCommonValue>
             </CartSummaryPrice>
             <CartSummaryPrice>
               <CartSummaryHighlight>Total</CartSummaryHighlight>
-              <CartSummaryHighlight>R$33,20</CartSummaryHighlight>
+              <CartSummaryHighlight>
+                {
+                  totalPrice.toLocaleString(
+                    "pt-BR",
+                    {
+                      style: "currency",
+                      currency: "BRL",
+                      minimumFractionDigits: 2
+                    }
+                  )
+                }
+              </CartSummaryHighlight>
             </CartSummaryPrice>
           </CartFooter>
-          <BuyButton to="/delivery">Confirmar Pedido</BuyButton>
+          <BuyButton type="submit">Confirmar Pedido</BuyButton>
         </CartSelectedItems>
       </div>
     </Container>
